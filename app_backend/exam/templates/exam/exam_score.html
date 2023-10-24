@@ -1,0 +1,8 @@
+{% extends 'exam/base.html' %}
+
+{% block content %}
+    <h1>Exam Score</h1>
+    <p>Exam: {{ exam.title }}</p>
+    <p>Your Score: {{ score }} / {{ total_questions }}</p>
+    <a href="{% url 'exam_list' %}">Back to Exam List</a>
+{% endblock %}

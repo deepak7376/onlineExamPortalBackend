@@ -1,0 +1,18 @@
+{% extends 'exam/base.html' %}
+
+{% block content %}
+    <h2>Available Exams</h2>
+    <ul>
+        {% for exam in exams %}
+            <li>
+                <h3>{{ exam.title }}</h3>
+                <p>Description: {{ exam.description }}</p>
+                <p>Duration: {{ exam.duration }} minutes</p>
+                <a href="{% url 'take_exam' exam.exam_id %}">Take Exam</a>
+            </li>
+        {% empty %}
+            <p>No exams available.</p>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

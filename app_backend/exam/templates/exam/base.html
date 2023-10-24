@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Online Exam Platform{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Online Exam Platform</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <!-- Add navigation links as needed -->
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        &copy; {{ year }} Online Exam Platform
+    </footer>
+</body>
+</html>
