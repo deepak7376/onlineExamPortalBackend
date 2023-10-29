@@ -1,57 +1,55 @@
-from .models import Exam
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import ExamSerializer
-from .models import Exam, Question
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import ExamSerializer, QuestionSerializer
+from rest_framework import viewsets
+from .models import Role, SubscriptionStatus, UserProfile, User, Category, Question, QuestionOption, ExamType, Exam, ExamQuestionRelation, UserExamRelation, ExamAttemptStatus, ExamCategoryRelation
+from .serializers import RoleSerializer, SubscriptionStatusSerializer, UserProfileSerializer, UserSerializer, CategorySerializer, QuestionSerializer, QuestionOptionSerializer, ExamTypeSerializer, ExamSerializer, ExamQuestionRelationSerializer, UserExamRelationSerializer, ExamAttemptStatusSerializer, ExamCategoryRelationSerializer
 
-@api_view(['POST'])
-def create_exam(request):
-    if request.method == 'POST':
-        print(f"request_data:  {request.data}")
-        serializer = ExamSerializer(data=request.data)
+class RoleViewSet(viewsets.ModelViewSet):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class SubscriptionStatusViewSet(viewsets.ModelViewSet):
+    queryset = SubscriptionStatus.objects.all()
+    serializer_class = SubscriptionStatusSerializer
 
-@api_view(['GET'])
-def get_exam(request, exam_id):
-    try:
-        exam = Exam.objects.get(exam_id=exam_id)
-    except Exam.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
 
-    serializer = ExamSerializer(exam)
-    return Response(serializer.data)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
 
-@api_view(['GET'])
-def start_exam(request, exam_id):
-    try:
-        exam = Exam.objects.get(exam_id=exam_id)
-    except Exam.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class QuestionOptionViewSet(viewsets.ModelViewSet):
+    queryset = QuestionOption.objects.all()
+    serializer_class = QuestionOptionSerializer
 
-    # Retrieve questions related to the exam
-    questions = Question.objects.filter(exam=exam)
+class ExamTypeViewSet(viewsets.ModelViewSet):
+    queryset = ExamType.objects.all()
+    serializer_class = ExamTypeSerializer
 
-    # Serialize the questions
-    serializer = QuestionSerializer(questions, many=True)
+class ExamViewSet(viewsets.ModelViewSet):
+    queryset = Exam.objects.all()
+    serializer_class = ExamSerializer
 
-    # You can return both the exam information and the related questions
-    response_data = {
-        'exam': ExamSerializer(exam).data,
-        'questions': serializer.data
-    }
+class ExamQuestionRelationViewSet(viewsets.ModelViewSet):
+    queryset = ExamQuestionRelation.objects.all()
+    serializer_class = ExamQuestionRelationSerializer
 
-    return Response(response_data)
+class UserExamRelationViewSet(viewsets.ModelViewSet):
+    queryset = UserExamRelation.objects.all()
+    serializer_class = UserExamRelationSerializer
 
+class ExamAttemptStatusViewSet(viewsets.ModelViewSet):
+    queryset = ExamAttemptStatus.objects.all()
+    serializer_class = ExamAttemptStatusSerializer
 
-
+class ExamCategoryRelationViewSet(viewsets.ModelViewSet):
+    queryset = ExamCategoryRelation.objects.all()
+    serializer_class = ExamCategoryRelationSerializer

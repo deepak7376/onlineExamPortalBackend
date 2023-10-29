@@ -1,31 +1,91 @@
 from django.db import models
-from users.models import User
 
-class Exam(models.Model):
-    exam_id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
-    duration = models.PositiveIntegerField()
-    pass_marks = models.PositiveIntegerField()
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    creation_date = models.DateTimeField()
-    code = models.CharField(max_length=10, unique=True, default='YOUR_DEFAULT_CODE_VALUE')
+class Role(models.Model):
+    role_name = models.CharField(max_length=255)
 
-class Question(models.Model):
-    question_id = models.AutoField(primary_key=True)
-    exams = models.ManyToManyField(Exam, through='QuestionExamRelationship')
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True)
-    question_text = models.TextField()
-    question_type = models.CharField(max_length=15, choices=[('multiple-choice', 'Multiple Choice'), ('true-false', 'True/False'), ('short-answer', 'Short Answer')])
-    options = models.JSONField(null=True, blank=True)  # Store options as JSON
-    correct_answer = models.TextField(null=True, blank=True)  # For multiple-choice questions
+    def __str__(self):
+        return self.role_name
+
+class SubscriptionStatus(models.Model):
+    status_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.status_name
+
+class UserProfile(models.Model):
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=255)
+    contact_details = models.CharField(max_length=255)
+    preferences = models.TextField()
+
+class User(models.Model):
+    username = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=255)
+    registration_date = models.DateTimeField()
+    last_login = models.DateTimeField()
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    subscription_status = models.ForeignKey(SubscriptionStatus, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.username
 
 class Category(models.Model):
-    category_id = models.AutoField(primary_key=True)
-    category_name = models.CharField(max_length=50)
-    description = models.TextField(null=True, blank=True)
+    category_name = models.CharField(max_length=255)
+    category_type = models.CharField(max_length=255)
+    description = models.TextField()
 
+    def __str__(self):
+        return self.category_name
 
-class QuestionExamRelationship(models.Model):
+class Question(models.Model):
+    question_text = models.TextField()
+    question_tag = models.CharField(max_length=255, blank=True)
+    question_type = models.CharField(max_length=255)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    difficulty_level = models.CharField(max_length=255)
+
+class QuestionOption(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    option_text = models.CharField(max_length=255)
+    correct_answer = models.BooleanField()
+
+class ExamType(models.Model):
+    type_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.type_name
+
+class Exam(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    duration = models.PositiveIntegerField()
+    exam_type = models.ForeignKey(ExamType, on_delete=models.CASCADE)
+    pass_mark = models.PositiveIntegerField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    creation_date = models.DateTimeField()
+    code = models.CharField(max_length=255)
+    scheduled_start_time = models.DateTimeField()
+    scheduled_end_time = models.DateTimeField()
+
+class ExamQuestionRelation(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+class UserExamRelation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    status_id = models.ForeignKey('ExamAttemptStatus', on_delete=models.CASCADE)
+    score = models.PositiveIntegerField()
+
+class ExamAttemptStatus(models.Model):
+    status_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.status_name
+
+class ExamCategoryRelation(models.Model):
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
