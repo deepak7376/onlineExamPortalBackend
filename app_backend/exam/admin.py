@@ -1,54 +1,26 @@
 from django.contrib import admin
-from .models import Role, SubscriptionStatus, UserProfile, User, Category, Question, QuestionOption, ExamType, Exam, ExamQuestionRelation, UserExamRelation, ExamAttemptStatus, ExamCategoryRelation
+from .models import User, Question, Exam, ExamQuestionRelation, UserExamRelation
 
-@admin.register(Role)
-class RoleAdmin(admin.ModelAdmin):
-    list_display = ['role_name']
+# Define custom admin classes for each model
 
-@admin.register(SubscriptionStatus)
-class SubscriptionStatusAdmin(admin.ModelAdmin):
-    list_display = ['status_name']
-
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'contact_details']
-
-@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'registration_date', 'last_login', 'role', 'subscription_status']
+    list_display = [field.name for field in User._meta.fields]
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['category_name', 'category_type']
-
-@admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['question_text', 'question_tag', 'question_type', 'created_by', 'difficulty_level']
+    list_display = [field.name for field in Question._meta.fields]
 
-@admin.register(QuestionOption)
-class QuestionOptionAdmin(admin.ModelAdmin):
-    list_display = ['question', 'option_text', 'correct_answer']
-
-@admin.register(ExamType)
-class ExamTypeAdmin(admin.ModelAdmin):
-    list_display = ['type_name']
-
-@admin.register(Exam)
 class ExamAdmin(admin.ModelAdmin):
-    list_display = ['title', 'description', 'duration', 'exam_type', 'pass_mark', 'created_by', 'creation_date', 'code', 'scheduled_start_time', 'scheduled_end_time']
+    list_display = [field.name for field in Exam._meta.fields]
 
-@admin.register(ExamQuestionRelation)
 class ExamQuestionRelationAdmin(admin.ModelAdmin):
-    list_display = ['exam', 'question']
+    list_display = [field.name for field in ExamQuestionRelation._meta.fields]
 
-@admin.register(UserExamRelation)
 class UserExamRelationAdmin(admin.ModelAdmin):
-    list_display = ['user', 'exam', 'start_time', 'end_time', 'status_id', 'score']
+    list_display = [field.name for field in UserExamRelation._meta.fields]
 
-@admin.register(ExamAttemptStatus)
-class ExamAttemptStatusAdmin(admin.ModelAdmin):
-    list_display = ['status_name']
-
-@admin.register(ExamCategoryRelation)
-class ExamCategoryRelationAdmin(admin.ModelAdmin):
-    list_display = ['exam', 'category']
+# Register the models with the custom admin classes
+admin.site.register(User, UserAdmin)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Exam, ExamAdmin)
+admin.site.register(ExamQuestionRelation, ExamQuestionRelationAdmin)
+admin.site.register(UserExamRelation, UserExamRelationAdmin)
