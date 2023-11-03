@@ -10,7 +10,7 @@ from .views import (
 
 router = routers.DefaultRouter()
 
-router.register(r'users', UserViewSet)
+router.register(r'users', UserViewSet, )
 router.register(r'questions', QuestionViewSet)
 router.register(r'exams', ExamViewSet)
 router.register(r'exam-question-relations', ExamQuestionRelationViewSet)
